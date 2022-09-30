@@ -1,19 +1,26 @@
 package com.example.fetchrecipeusingretrofit;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
 
+import javax.security.auth.login.LoginException;
+
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.GET;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         recipesList.enqueue(new Callback<List<Recipes>>() {
             @Override
             public void onResponse(Call<List<Recipes>> call, Response<List<Recipes>> response) {
-                generateDataList(response.body());
+                generateDataList(response);
             }
 
             @Override
@@ -47,9 +54,20 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void generateDataList(List<Recipes> recipesList) {
-        Toast.makeText(this, recipesList.get(0).getId().toString(), Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, recipesList.get(0).getTitle(), Toast.LENGTH_SHORT).show();
+    private void generateDataList(Response<List<Recipes>> recipesList) {
+        //Toast.makeText(this, recipesList.body().get(0).getId().toString(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, recipesList.body().get(0).getTitle(), Toast.LENGTH_SHORT).show();
+        String recipe = "Here is the full ingredient list:\n";
+
+        for (int i = 0; i < recipesList.body().get(0).getUsedIngredients().size(); ++i) {
+            recipe += recipesList.body().get(0).getUsedIngredients().get(i).get("originalName") + ": " + recipesList.body().get(0).getUsedIngredients().get(i).get("amount") + "\n";
+        }
+
+        for (int j = 0; j < recipesList.body().get(0).getMissedIngredients().size(); ++j) {
+            recipe += recipesList.body().get(0).getMissedIngredients().get(j).get("originalName") + ": " + recipesList.body().get(0).getMissedIngredients().get(j).get("amount") + "\n";
+        }
+
+        tvTitle.setText(recipe);
     }
 }
 
