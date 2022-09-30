@@ -26,8 +26,14 @@ public class MainActivity extends AppCompatActivity {
         tvId = findViewById(R.id.tvId);
         tvTitle = findViewById(R.id.tvTitle);
 
+        // This creates an instance of the retrofit client
         GetDataService service = RetrofitClientInstance.getRetrofitInstance().create(GetDataService.class);
+
+        // Grab the list of recipes from the JSON that was fetched using the GET parameters defined in the GetDataService interface
         Call<List<Recipes>> recipesList = service.getAllRecipes();
+
+        // Asynchronously send the request and notify callback of its response or if an error occurred talking to the server,
+        // creating the request, or processing the response.
         recipesList.enqueue(new Callback<List<Recipes>>() {
             @Override
             public void onResponse(Call<List<Recipes>> call, Response<List<Recipes>> response) {

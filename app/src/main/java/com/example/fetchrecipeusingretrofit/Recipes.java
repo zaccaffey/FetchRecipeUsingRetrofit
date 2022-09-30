@@ -1,7 +1,5 @@
 package com.example.fetchrecipeusingretrofit;
 
-import android.media.Image;
-
 public class Recipes {
 
     private Integer id;
